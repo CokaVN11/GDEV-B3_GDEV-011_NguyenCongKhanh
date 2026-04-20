@@ -14,6 +14,8 @@ public class SoliderController : MonoBehaviour
 
   private CircleCollider2D soldierCollider;
 
+  private Coroutine lifetimeCoroutine;
+
   public void SetPool(PrefabPool pool)
   {
     objectPool = pool;
@@ -22,7 +24,7 @@ public class SoliderController : MonoBehaviour
 
   private void OnEnable()
   {
-    StartCoroutine(ReturnToPool());
+    lifetimeCoroutine = StartCoroutine(ReturnToPool());
   }
 
   private IEnumerator ReturnToPool()
@@ -30,7 +32,11 @@ public class SoliderController : MonoBehaviour
     yield return new WaitForSeconds(lifetime);
 
     gameManager.OnPlayerFailRescue();
+    Release();
+  }
 
+  private void Release()
+  {
     if (objectPool != null)
       objectPool.Release(gameObject);
     else
@@ -62,7 +68,9 @@ public class SoliderController : MonoBehaviour
   {
     if (collision.CompareTag("Player"))
     {
-      Debug.Log("Player rescued by soldier!");
+      StopCoroutine(lifetimeCoroutine);
+      Debug.Log("Player rescued soldier!");
+      Release();
     }
   }
 }

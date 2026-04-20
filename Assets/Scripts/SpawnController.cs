@@ -46,19 +46,19 @@ public class SpawnController : MonoBehaviour
 
     private IEnumerator Spawn()
     {
-        yield return new WaitForSeconds(spawnInterval); // Spawn every spawnInterval seconds
-        // Guard: if no prefab is wired up in the Inspector, log a clear error
-        // instead of letting Unity throw a cryptic NullReferenceException.
         if (soliderPool == null)
         {
-            Debug.LogError("[PlayerShoot] SoliderPool was not found in the scene.");
+            Debug.LogError("[SpawnController] SoliderPool was not assigned in the Inspector.");
             yield break;
         }
 
-        Vector3 spawnPosition = GetSpawnPosition();
+        while (true)
+        {
+            yield return new WaitForSeconds(spawnInterval);
 
-        var spawnedObject = soliderPool.Get();
-        spawnedObject.transform.position = spawnPosition;
+            var spawnedObject = soliderPool.Get();
+            spawnedObject.transform.position = GetSpawnPosition();
+        }
     }
 
     private Vector3 GetSpawnPosition()

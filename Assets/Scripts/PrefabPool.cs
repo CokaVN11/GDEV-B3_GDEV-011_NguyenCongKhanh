@@ -56,8 +56,8 @@ public class PrefabPool : MonoBehaviour
     {
         GameObject instance = Instantiate(prefab);
 
-        // Give the pooled object a reference back to this pool, so it can
-        // TODO:
+        if (instance.TryGetComponent<SoliderController>(out var soldier))
+            soldier.SetPool(this);
 
         return instance;
     }
