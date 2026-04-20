@@ -12,6 +12,12 @@ public class GameManager : MonoBehaviour
     public int MapWidth => mapWidth;
     public int MapHeight => mapHeight;
 
+    // Floor tiles occupy cols 1..(mapWidth-2), rows 1..(mapHeight-2) in world space
+    public Bounds FloorBounds => new Bounds(
+        new Vector3(MapCenter.x, MapCenter.y, 0),
+        new Vector3(mapWidth - 2, mapHeight - 2, 0)
+    );
+
     public float playerHealth = 3f;
     public int soldiersRescued { get; private set; }
     public int soldiersDied { get; private set; }

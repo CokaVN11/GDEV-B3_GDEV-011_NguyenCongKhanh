@@ -6,11 +6,9 @@ public class SpawnController : MonoBehaviour
     [SerializeField]
     private PrefabPool soliderPool;
 
-    private Camera mainCamera;
-
     [SerializeField] private GameObject player;
 
-    [SerializeField] private Grid map;
+    [SerializeField] private GameManager gameManager;
 
     [SerializeField] private float spawnInterval = 1f;
 
@@ -21,18 +19,14 @@ public class SpawnController : MonoBehaviour
 
     void Start()
     {
-        mainCamera = Camera.main;
         if (player == null)
         {
-            Debug.LogError("Player reference not set on SoliderController.");
+            Debug.LogError("Player reference not set on SpawnController.");
             player = GameObject.FindWithTag("Player");
         }
 
-        if (map == null)
-        {
-            Debug.LogError("Grid reference not set on SpawnController.");
-            map = FindObjectOfType<Grid>();
-        }
+        if (gameManager == null)
+            gameManager = FindObjectOfType<GameManager>();
     }
 
     private void OnEnable()
@@ -67,16 +61,9 @@ public class SpawnController : MonoBehaviour
 
     private Vector3 GetSpawnPosition()
     {
-        // need to spawn within map, and not too close to player.
-        Vector3 playerPos = player.transform.position;
-
-        // TODO: convert to spawn within map bounds, not just camera bounds. This is a bit tricky because the map is a Grid and we want to spawn on valid cells.
-
-        Vector3 cameraBounnds = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
-        float spawnX = Random.Range(-cameraBounnds.x, cameraBounnds.x);
-        float spawnY = Random.Range(-cameraBounnds.y, cameraBounnds.y);
-        Vector3 spawnPosition = new(spawnX, spawnY, 0);
-
-        return spawnPosition;
+        Bounds floor = gameManager.FloorBounds;
+        float spawnX = Random.Range(floor.min.x, floor.max.x);
+        float spawnY = Random.Range(floor.min.y, floor.max.y);
+        return new Vector3(spawnX, spawnY, 0);
     }
 }
