@@ -1,0 +1,78 @@
+using System.Collections;
+using UnityEngine;
+
+public class SpawnController : MonoBehaviour
+{
+    [SerializeField]
+    private PrefabPool soliderPool;
+
+    private Camera mainCamera;
+
+    [SerializeField] private GameObject player;
+
+    [SerializeField] private Grid map;
+
+    [SerializeField] private float spawnInterval = 1f;
+
+    [SerializeField] private float increasingDifficultyRate = 0.1f; // How much to decrease spawn interval per second
+
+
+    void Start()
+    {
+        mainCamera = Camera.main;
+        if (player == null)
+        {
+            Debug.LogError("Player reference not set on SoliderController.");
+            player = GameObject.FindWithTag("Player");
+        }
+
+        if (map == null)
+        {
+            Debug.LogError("Grid reference not set on SpawnController.");
+            map = FindObjectOfType<Grid>();
+        }
+    }
+
+    private void OnEnable()
+    {
+        StartCoroutine(Spawn());
+    }
+
+    private void Update()
+    {
+        // Gradually increase difficulty by decreasing spawn interval over time.
+        spawnInterval = Mathf.Max(0.1f, spawnInterval - increasingDifficultyRate * Time.deltaTime);
+    }
+
+    private IEnumerator Spawn()
+    {
+        yield return new WaitForSeconds(spawnInterval); // Spawn every spawnInterval seconds
+        // Guard: if no prefab is wired up in the Inspector, log a clear error
+        // instead of letting Unity throw a cryptic NullReferenceException.
+        if (soliderPool == null)
+        {
+            Debug.LogError("[PlayerShoot] SoliderPool was not found in the scene.");
+            yield break;
+        }
+
+        Vector3 spawnPosition = GetSpawnPosition();
+
+        var spawnedObject = soliderPool.Get();
+        spawnedObject.transform.position = spawnPosition;
+    }
+
+    private Vector3 GetSpawnPosition()
+    {
+        // need to spawn within map, and not too close to player.
+        Vector3 playerPos = player.transform.position;
+
+        // TODO: convert to spawn within map bounds, not just camera bounds. This is a bit tricky because the map is a Grid and we want to spawn on valid cells.
+
+        Vector3 cameraBounnds = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+        float spawnX = Random.Range(-cameraBounnds.x, cameraBounnds.x);
+        float spawnY = Random.Range(-cameraBounnds.y, cameraBounnds.y);
+        Vector3 spawnPosition = new(spawnX, spawnY, 0);
+
+        return spawnPosition;
+    }
+}
