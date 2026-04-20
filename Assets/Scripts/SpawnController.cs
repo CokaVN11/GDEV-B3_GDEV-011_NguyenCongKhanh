@@ -16,6 +16,8 @@ public class SpawnController : MonoBehaviour
 
     [SerializeField] private float increasingDifficultyRate = 0.1f; // How much to decrease spawn interval per second
 
+    [SerializeField] private int maxActiveSoldiers = 3;
+
 
     void Start()
     {
@@ -55,6 +57,8 @@ public class SpawnController : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(spawnInterval);
+
+            if (soliderPool.CountActive >= maxActiveSoldiers) continue;
 
             var spawnedObject = soliderPool.Get();
             spawnedObject.transform.position = GetSpawnPosition();
