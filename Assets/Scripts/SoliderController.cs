@@ -35,6 +35,13 @@ public class SoliderController : MonoBehaviour
     Release();
   }
 
+  public void Rescue()
+  {
+    if (lifetimeCoroutine != null)
+      StopCoroutine(lifetimeCoroutine);
+    Release();
+  }
+
   private void Release()
   {
     if (objectPool != null)
@@ -64,13 +71,4 @@ public class SoliderController : MonoBehaviour
 
   }
 
-  void OnTriggerEnter2D(Collider2D collision)
-  {
-    if (collision.CompareTag("Player"))
-    {
-      StopCoroutine(lifetimeCoroutine);
-      Debug.Log("Player rescued soldier!");
-      Release();
-    }
-  }
 }

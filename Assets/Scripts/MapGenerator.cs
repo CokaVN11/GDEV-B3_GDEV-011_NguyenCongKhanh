@@ -85,9 +85,8 @@ public class MapGenerator : MonoBehaviour
       for (int col = 0; col < mapWidth; col++)
       {
         int i = row * mapWidth + col;
-        if (roomLayout[row, col] == 'F')
-          floorTiles[i] = floorTile;
-        else if (roomLayout[row, col] == 'W')
+        floorTiles[i] = floorTile;
+        if (roomLayout[row, col] == 'W')
           wallTiles[i] = wallTile;
       }
 

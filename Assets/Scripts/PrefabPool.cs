@@ -42,6 +42,8 @@ public class PrefabPool : MonoBehaviour
         );
     }
 
+    public int CountActive => objectPool.CountActive;
+
     public GameObject Get()
     {
         return objectPool.Get();
@@ -58,6 +60,9 @@ public class PrefabPool : MonoBehaviour
 
         if (instance.TryGetComponent<SoliderController>(out var soldier))
             soldier.SetPool(this);
+
+        if (instance.TryGetComponent<DangerZoneController>(out var zone))
+            zone.SetPool(this);
 
         return instance;
     }

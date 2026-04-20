@@ -2,25 +2,65 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private float surviveDuration = 60f;
+
+    [Header("Map Dimensions")]
+    [SerializeField] private int mapWidth = 20;
+    [SerializeField] private int mapHeight = 20;
+
+    public Vector2 MapCenter => new Vector2((mapWidth - 1) / 2f, (mapHeight - 1) / 2f);
+    public int MapWidth => mapWidth;
+    public int MapHeight => mapHeight;
+
     public float playerHealth = 3f;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public int soldiersRescued { get; private set; }
+    public int soldiersDied { get; private set; }
+    public float timeRemaining { get; private set; }
+    public bool isGameOver { get; private set; }
+    public bool isWon { get; private set; }
+
     void Start()
     {
-
+        timeRemaining = surviveDuration;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (isGameOver || isWon) return;
 
+        timeRemaining -= Time.deltaTime;
+        if (timeRemaining <= 0f)
+        {
+            timeRemaining = 0f;
+            isWon = true;
+            Debug.Log("You Win!");
+        }
+    }
+
+    void OnEnable()
+    {
+        PlayerController.OnSoldierRescued += OnPlayerRescueSoldier;
+    }
+
+    void OnDisable()
+    {
+        PlayerController.OnSoldierRescued -= OnPlayerRescueSoldier;
+    }
+
+    public void OnPlayerRescueSoldier()
+    {
+        soldiersRescued++;
+        Debug.Log("Soldiers rescued: " + soldiersRescued);
     }
 
     public void OnPlayerFailRescue()
     {
+        soldiersDied++;
         playerHealth -= 1f;
-        Debug.Log("Player health: " + playerHealth);
+        Debug.Log("Soldiers died: " + soldiersDied + " | Health: " + playerHealth);
         if (playerHealth <= 0f)
         {
+            isGameOver = true;
             Debug.Log("Game Over!");
         }
     }
