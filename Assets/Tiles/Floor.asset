@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b08ceb78e3b2495b8d808a5860e66794, type: 3}
   m_Name: Floor
   m_EditorClassIdentifier: Unity.2D.Tilemap.Extras::UnityEngine.Tilemaps.AutoTile
-  m_DefaultSprite: {fileID: 7482667652216324306, guid: 6adfd4cbb178c40d3abf6c825aa04bc1, type: 3}
+  m_DefaultSprite: {fileID: 7482667652216324306, guid: 83cb7f72bde0b424d8592b5d648b5168, type: 3}
   m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
   m_MaskType: 0
